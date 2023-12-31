@@ -4,6 +4,11 @@ import styles from "./page.module.css";
 import { getProviders, signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import GoogleLoginButton from "@/components/GoogleLoginButton";
+import { gapi } from 'gapi-script';
+
+const clientId = process.env.GOOGLE_CLIENT_ID;
+const secretId = process.env.GOOGLE_CLIENT_SECRET;
 
 const Login = ({ url }) => {
   const session = useSession();
@@ -13,6 +18,13 @@ const Login = ({ url }) => {
   const [success, setSuccess] = useState("");
 
   useEffect(() => {
+    function start(){
+      gapi.client.init({
+        clientId:clientId,
+        scope:"",
+      })
+    };
+    gapi.load('client:auth2',start);
     setError(params.get("error"));
     setSuccess(params.get("success"));
   }, [params]);
@@ -34,7 +46,11 @@ const Login = ({ url }) => {
       email,
       password,
     });
+
+
   };
+
+  
 
   return (
     <div className={styles.container}>
@@ -57,14 +73,9 @@ const Login = ({ url }) => {
         <button className={styles.button}>Login</button>
         {error && error}
       </form>
-      <button
-        onClick={() => {
-          signIn("google");
-        }}
-        className={styles.button + " " + styles.google}
-      >
-        Login with Google
-      </button>
+      
+      <GoogleLoginButton/>
+  
       <span className={styles.or}>- OR -</span>
       <Link className={styles.link} href="/dashboard/register">
         Create new account

@@ -5,7 +5,9 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import User from "@/models/User";
 import connect from "@/utils/db";
 import bcrypt from "bcryptjs";
+import dotenv from "dotenv";
 
+dotenv.config();
 const handler = NextAuth({
   providers: [
     CredentialsProvider({
@@ -38,10 +40,6 @@ const handler = NextAuth({
           throw new Error(err);
         }
       },
-    }),
-    GithubProvider({
-      clientId: process.env.GITHUB_ID,
-      clientSecret: process.env.GITHUB_SECRET,
     }),
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
